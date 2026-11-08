@@ -8,7 +8,7 @@
 :root{--bg:#f7f7f5;--card:#fff;--fg:#1d1d1f;--mut:#666;--acc:#129fd8;--bd:#ddd;--taken:#eee}
 @media (prefers-color-scheme:dark){:root{--bg:#141414;--card:#1e1e1e;--fg:#eee;--mut:#aaa;--acc:#3db3e8;--bd:#333;--taken:#262626}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif}
-main{max-width:720px;margin:40px auto;padding:0 16px}
+main{max-width:760px;margin:40px auto;padding:0 16px}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:24px;margin-bottom:16px}
 h1{font-size:1.4rem;margin:0 0 4px}p.sub{color:var(--mut);margin:0}
 label.f{display:block;font-weight:600;margin:16px 0 6px}
@@ -18,7 +18,10 @@ select,input[type=email],input[type=text]{width:100%;padding:10px;border:1px sol
 .t.taken{background:var(--taken);cursor:not-allowed;opacity:.6}.t.taken b::after{content:" — taken by Group " attr(data-g);font-weight:400;color:var(--mut)}
 button{margin-top:20px;width:100%;padding:12px;border:0;border-radius:8px;background:var(--acc);color:#fff;font:inherit;font-weight:600;cursor:pointer}
 button:disabled{opacity:.6;cursor:default}
-.err{color:#c0392b;margin-top:10px}.ok{display:none}.mut{color:var(--mut);font-size:.9rem}
+.err{color:#c0392b;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:.93rem}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--bd);vertical-align:top}th{color:var(--mut);font-weight:600}
+h2{font-size:1.1rem;margin:0 0 10px}.dates{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.dates div{border:1px solid var(--bd);border-radius:8px;padding:10px}.dates b{display:block;color:var(--acc)}.ok{display:none}.mut{color:var(--mut);font-size:.9rem}
 </style>
 </head>
 <body>
@@ -36,6 +39,8 @@ button:disabled{opacity:.6;cursor:default}
     <input type="text" id="name" required>
     <label class="f" for="email">University email</label>
     <input type="email" id="email" required placeholder="firstname.lastname.001@student.uni.lu">
+    <label class="f" for="sub">Your specific focus / poster title</label>
+    <input type="text" id="sub" required placeholder="e.g. Can AI coding assistants replace junior developers?">
     <label class="f">Topic</label>
     <div id="topics"><p class="mut">Loading available topics…</p></div>
     <button id="btn" disabled>Submit choice</button>
@@ -46,6 +51,29 @@ button:disabled{opacity:.6;cursor:default}
   <h1>Topic confirmed ✔</h1>
   <p><b id="okGroup"></b> will present: <b id="okTopic"></b></p>
   <p class="mut">A confirmation was sent to <span id="okEmail"></span>. Choices are final; contact the teaching team if there is a problem.</p>
+</div>
+<div class="card">
+  <h2>📅 Schedule</h2>
+  <div class="dates">
+    <div><b>Fri 13.11, 23:59</b>Topic selection deadline (this website)</div>
+    <div><b>Fri 27.11, 15:45–18:15</b>Poster Q&amp;A · Lab 10, MSA 3.110 · No quiz</div>
+    <div><b>Fri 04.12, 15:45–18:15</b>Final preparation &amp; poster submission (Moodle) · Lab 11, MSA 3.350 · No quiz</div>
+    <div><b>Fri 11.12, 15:45–18:15</b>Poster Session · mandatory for all groups</div>
+  </div>
+</div>
+<div class="card">
+  <h2>📋 Registered Groups &amp; Topics</h2>
+  <table><thead><tr><th>Group</th><th>Topic</th><th>Focus / Title</th></tr></thead><tbody id="reg"><tr><td colspan="3" class="mut">Loading…</td></tr></tbody></table>
+</div>
+<div class="card">
+  <h2>⚖️ Peer Grading (20 points)</h2>
+  <table><thead><tr><th>Category</th><th>Pts</th><th>Guiding question</th></tr></thead><tbody>
+    <tr><td>Visual Appeal &amp; Layout</td><td>5</td><td>Is the text legible, are the diagrams clear, is the layout not overcrowded?</td></tr>
+    <tr><td>Presentation Pitch</td><td>5</td><td>Did the speaker explain the topic clearly and engagingly?</td></tr>
+    <tr><td>Accessibility</td><td>5</td><td>Could you understand the problem and the key ideas without being an expert?</td></tr>
+    <tr><td>Q&amp;A Interaction</td><td>5</td><td>Did the presenters answer questions confidently and correctly?</td></tr>
+  </tbody></table>
+  <p class="mut">Best-rated posters receive the Best Poster Award. Questions? hongyang.li@uni.lu</p>
 </div>
 </main>
 <script src="topics.js"></script>
@@ -64,12 +92,20 @@ function render(taken) {
   $("btn").disabled = false;
 }
 
+function renderReg(rows) {
+  const esc = t => String(t || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  rows.sort((a, b) => parseInt(a.group.replace(/\D/g, "")) - parseInt(b.group.replace(/\D/g, "")));
+  $("reg").innerHTML = rows.length ? rows.map(r => `<tr><td>${esc(r.group)}</td><td>${esc(r.topic)}</td><td>${esc(r.sub) || "–"}</td></tr>`).join("")
+    : `<tr><td colspan="3" class="mut">No groups registered yet.</td></tr>`;
+}
+
 async function load() {
   try {
     if (!ENDPOINT) throw new Error("Topic service not configured yet.");
     const r = await fetch(ENDPOINT + "?t=" + Date.now());
     const data = await r.json();
     render(data.taken);
+    renderReg(data.rows || Object.entries(data.taken).map(([topic, group]) => ({ group, topic })));
     if (data.closed) { $("btn").disabled = true; $("err").textContent = "Topic selection is closed."; }
   } catch (x) { $("topics").innerHTML = `<p class="err">Could not load topics: ${x.message}</p>`; }
 }
@@ -79,13 +115,13 @@ $("f").addEventListener("submit", async e => {
   e.preventDefault();
   const btn = $("btn"), err = $("err");
   const pick = document.querySelector("input[name=topic]:checked");
-  const data = { group: $("group").value, name: $("name").value.trim(), email: $("email").value.trim(), topic: pick.value };
+  const data = { group: $("group").value, name: $("name").value.trim(), email: $("email").value.trim(), sub: $("sub").value.trim(), topic: pick.value };
   btn.disabled = true; btn.textContent = "Submitting…"; err.textContent = "";
   try {
     const r = await fetch(ENDPOINT, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(data) });
     const res = await r.json();
     if (!res.ok) throw new Error(res.error);
-    $("okGroup").textContent = data.group; $("okTopic").textContent = data.topic; $("okEmail").textContent = data.email;
+    $("okGroup").textContent = data.group; $("okTopic").textContent = data.topic + " – " + data.sub; load(); $("okEmail").textContent = data.email;
     $("formCard").style.display = "none"; $("okCard").style.display = "block"; window.scrollTo(0, 0);
   } catch (x) {
     err.textContent = x.message; btn.disabled = false; btn.textContent = "Submit choice"; load();

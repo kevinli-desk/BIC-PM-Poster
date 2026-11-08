@@ -1,7 +1,7 @@
 // Google Apps Script bound to a Google Sheet. Deploy as Web app (Execute as: Me, Access: Anyone).
-// Columns: A Timestamp | B Group | C Poster Leader | D Email | E Topic
+// Columns: A Timestamp | B Group | C Poster Leader | D Email | E Topic | F Focus / Title
 const DEADLINE = new Date("2026-11-13T23:59:59+01:00");
-const HEADER = ["Timestamp", "Group", "Poster Leader", "Email", "Topic"];
+const HEADER = ["Timestamp", "Group", "Poster Leader", "Email", "Topic", "Focus / Title"];
 
 function sheet_() {
   const sh = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
@@ -15,12 +15,17 @@ function taken_(sh) {
   return taken;
 }
 
+function rows_(sh) {
+  return sh.getDataRange().getValues().slice(1).filter(r => r[4]).map(r => ({ group: r[1], topic: r[4], sub: r[5] || "" }));
+}
+
 function json_(o) {
   return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
 }
 
 function doGet() {
-  return json_({ taken: taken_(sheet_()), closed: new Date() > DEADLINE });
+  const sh = sheet_();
+  return json_({ taken: taken_(sh), rows: rows_(sh), closed: new Date() > DEADLINE });
 }
 
 function doPost(e) {
@@ -32,10 +37,10 @@ function doPost(e) {
     const sh = sheet_(), taken = taken_(sh);
     if (taken[d.topic]) return json_({ ok: false, error: `"${d.topic}" was just taken by ${taken[d.topic]}. Please choose another topic.` });
     if (Object.values(taken).includes(d.group)) return json_({ ok: false, error: `${d.group} has already chosen a topic.` });
-    sh.appendRow([new Date(), d.group, d.name, d.email, d.topic]);
+    sh.appendRow([new Date(), d.group, d.name, d.email, d.topic, d.sub || ""]);
   } finally { lock.releaseLock(); }
   MailApp.sendEmail(d.email, `PM Poster Session – ${d.group}: topic confirmed`,
-    `Dear ${d.name},\n\n${d.group} will present the topic "${d.topic}" at the Poster Session ` +
+    `Dear ${d.name},\n\n${d.group} will present the topic "${d.topic}" (focus: ${d.sub}) at the Poster Session ` +
     `on Friday 11.12.2026, 15:45–18:15.\n\nPlease share this with your group.\n\nBest regards,\nIntroduction to Project Management Teaching Team`);
   return json_({ ok: true });
 }
