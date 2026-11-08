@@ -83,7 +83,7 @@ footer{text-align:center;color:var(--mut);font-size:.85rem;padding:0 16px 40px}
 <main>
 <div class="card" id="formCard">
   <h2>Choose your group's topic</h2>
-  <p class="hint">Topic selection closes <b>Friday 13.11.2026, 23:59</b>.</p>
+  <p class="hint">Topic selection closes <b>today, Monday 09.11.2026, 23:59</b>.</p>
   <div class="notice">👤 <div>Only the <b>Poster Leader</b> submits, once per group. First come, first served: a taken topic is locked for everyone else. Agree on 2–3 favourites with your group first.</div></div>
   <form id="f">
     <div class="step"><span>1</span>Who you are</div>
@@ -126,8 +126,7 @@ footer{text-align:center;color:var(--mut);font-size:.85rem;padding:0 16px 40px}
     <h2>📅 Schedule</h2>
     <p class="hint">The real work happens between these dates, not in one session.</p>
     <ul class="timeline">
-      <li><b>Mon 09.11 · Lab 7</b><small>Kick-off: poster session introduced</small></li>
-      <li class="key"><b>Fri 13.11 · 23:59</b><small>Topic selection deadline (this website)</small></li>
+      <li class="key"><b>Mon 09.11 · Lab 7</b><small>Kick-off &amp; topic selection on this website, by 23:59</small></li>
       <li><b>Fri 27.11 · Lab 10 · 15:45–18:15</b><small>Lens split &amp; check-in: one lens per member (Poster Leader submits the split on Moodle), first sources, poster outline · room MSA 3.110 open with TA support, or work elsewhere · no quiz</small></li>
       <li><b>Fri 04.12 · Lab 11 · 15:45–18:15</b><small>Review &amp; build: turn your sources into the poster · submit PDF on Moodle by 23:59 · room MSA 3.350 open with TA support, or work elsewhere · no quiz</small></li>
       <li class="key"><b>Fri 11.12 · Lab 12 · 15:45–18:15</b><small>Poster Session · mandatory for all groups</small></li>
@@ -157,6 +156,7 @@ footer{text-align:center;color:var(--mut);font-size:.85rem;padding:0 16px 40px}
 <script>
 // Google Apps Script web app URL (see apps-script/README.md)
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbxmZchsX3UvcYZRWwmHhnTeTvcbPJ1Au5T0mpiitCjOYKpSWUW9QeVgV0_fLov7pE70/exec";
+const CLOSE = new Date("2026-11-09T23:59:59+01:00").getTime();
 const $ = id => document.getElementById(id);
 const esc = t => String(t || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 for (let g = 1; g <= 14; g++) $("group").insertAdjacentHTML("beforeend", `<option>Group ${g}</option>`);
@@ -186,7 +186,7 @@ async function load() {
     const data = await r.json();
     render(data.taken);
     renderReg(data.rows || Object.entries(data.taken).map(([topic, group]) => ({ group, topic })));
-    if (data.closed) { $("btn").disabled = true; $("err").textContent = "Topic selection is closed."; }
+    if (data.closed || Date.now() > CLOSE) { $("btn").disabled = true; $("err").textContent = "Topic selection is closed."; }
   } catch (x) { $("topics").innerHTML = `<p class="err">Could not load topics: ${esc(x.message)}</p>`; }
 }
 load();
