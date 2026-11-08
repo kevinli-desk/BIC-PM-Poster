@@ -4,99 +4,166 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PM Poster Topics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Play:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f7f7f5;--card:#fff;--fg:#1d1d1f;--mut:#666;--acc:#129fd8;--bd:#ddd;--taken:#eee}
-@media (prefers-color-scheme:dark){:root{--bg:#141414;--card:#1e1e1e;--fg:#eee;--mut:#aaa;--acc:#3db3e8;--bd:#333;--taken:#262626}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif}
-main{max-width:760px;margin:40px auto;padding:0 16px}
-.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:24px;margin-bottom:16px}
-h1{font-size:1.4rem;margin:0 0 4px}p.sub{color:var(--mut);margin:0}
-label.f{display:block;font-weight:600;margin:16px 0 6px}
-select,input[type=email],input[type=text]{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--fg);font:inherit}
-.t{display:flex;gap:10px;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:8px 0;cursor:pointer}
-.t input{margin-top:5px}.t b{display:block}.t span{color:var(--mut);font-size:.92rem}
-.t.taken{background:var(--taken);cursor:not-allowed;opacity:.6}.t.taken b::after{content:" — taken by Group " attr(data-g);font-weight:400;color:var(--mut)}
-button{margin-top:20px;width:100%;padding:12px;border:0;border-radius:8px;background:var(--acc);color:#fff;font:inherit;font-weight:600;cursor:pointer}
-button:disabled{opacity:.6;cursor:default}
-.err{color:#c0392b;margin-top:10px}
-table{width:100%;border-collapse:collapse;font-size:.93rem}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--bd);vertical-align:top}th{color:var(--mut);font-weight:600}
-h2{font-size:1.1rem;margin:0 0 10px}.dates{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.dates div{border:1px solid var(--bd);border-radius:8px;padding:10px}.dates b{display:block;color:var(--acc)}.ok{display:none}.mut{color:var(--mut);font-size:.9rem}
+:root{--bg:#f4f6f8;--card:#fff;--fg:#14202b;--mut:#5f6b76;--acc:#129fd8;--acc2:#0b7fb0;--soft:#e8f5fb;--red:#e2231a;--bd:#e3e7eb;--taken:#f1f3f5;--shadow:0 1px 2px rgba(16,24,40,.04),0 4px 16px rgba(16,24,40,.06)}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1418;--card:#182027;--fg:#e8edf1;--mut:#9aa7b2;--acc:#3db3e8;--acc2:#6cc7ef;--soft:#14303d;--bd:#26313a;--taken:#141b21;--shadow:none}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 Inter,system-ui,sans-serif}
+.hero{background:linear-gradient(135deg,#129fd8 0%,#0b6fa3 100%);color:#fff;padding:44px 16px 84px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-60px;bottom:-60px;width:260px;height:260px;background:rgba(255,255,255,.08);transform:rotate(45deg)}
+.wrap{max-width:1040px;margin:0 auto;position:relative}
+.kicker{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;opacity:.85;margin:0 0 10px}
+.hero h1{font-family:Play,Inter,sans-serif;font-size:clamp(1.9rem,4vw,2.8rem);line-height:1.15;margin:0 0 8px;font-weight:700}
+.hero p.lead{margin:0;font-size:1.05rem;opacity:.92;max-width:640px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:6px 14px;font-size:.88rem;font-weight:500}
+main{max-width:1040px;margin:-52px auto 48px;padding:0 16px;position:relative}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:28px;margin-bottom:20px;box-shadow:var(--shadow)}
+h2{font-size:1.15rem;margin:0 0 4px;font-weight:700}
+.hint{color:var(--mut);font-size:.9rem;margin:0 0 18px}
+.notice{display:flex;gap:10px;align-items:flex-start;background:var(--soft);border-radius:10px;padding:12px 14px;font-size:.9rem;margin-bottom:22px}
+.step{display:flex;align-items:center;gap:10px;margin:26px 0 12px;font-weight:600}
+.step:first-of-type{margin-top:0}
+.step span{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--acc);color:#fff;font-size:.85rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+label.f{display:block;font-size:.82rem;font-weight:600;color:var(--mut);margin:0 0 6px}
+select,input[type=email],input[type=text]{width:100%;padding:11px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--fg);font:inherit;transition:border-color .15s,box-shadow .15s}
+select:focus,input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(18,159,216,.18)}
+.counter{font-weight:500;color:var(--mut);font-size:.88rem;margin-left:auto}
+#topics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.t{position:relative;display:flex;gap:12px;border:1.5px solid var(--bd);border-radius:12px;padding:14px;cursor:pointer;transition:border-color .15s,background .15s,transform .15s;background:var(--card)}
+.t:hover{border-color:var(--acc);transform:translateY(-1px)}
+.t input{position:absolute;opacity:0;pointer-events:none}
+.t .n{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:var(--soft);color:var(--acc2);font-weight:700;font-size:.9rem}
+.t b{display:block;font-size:.97rem;margin-bottom:2px}.t span{color:var(--mut);font-size:.86rem;line-height:1.45}
+.t:has(input:checked){border-color:var(--acc);background:var(--soft)}
+.t:has(input:checked) .n{background:var(--acc);color:#fff}
+.t.taken{background:var(--taken);cursor:not-allowed;transform:none;border-color:var(--bd)}
+.t.taken b,.t.taken span{opacity:.5}.t.taken .n{background:var(--bd);color:var(--mut)}
+.badge{position:absolute;top:10px;right:10px;font-size:.72rem;font-weight:600;background:var(--fg);color:var(--card);border-radius:999px;padding:2px 9px;opacity:.75}
+button{margin-top:24px;width:100%;padding:14px;border:0;border-radius:12px;background:var(--acc);color:#fff;font:inherit;font-weight:600;font-size:1rem;cursor:pointer;transition:background .15s}
+button:hover:not(:disabled){background:var(--acc2)}button:disabled{opacity:.55;cursor:default}
+.err{color:var(--red);margin-top:12px;font-weight:500}
+.ok{display:none;text-align:center;padding:40px 28px}.ok .big{font-size:2.6rem;margin-bottom:6px}
+.ok h2{font-size:1.4rem}.ok .pick{display:inline-block;background:var(--soft);border-radius:10px;padding:10px 16px;margin:14px 0;font-weight:600}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.timeline{list-style:none;margin:0;padding:0;position:relative}
+.timeline::before{content:"";position:absolute;left:7px;top:8px;bottom:8px;width:2px;background:var(--bd)}
+.timeline li{position:relative;padding:0 0 18px 30px}.timeline li:last-child{padding-bottom:0}
+.timeline li::before{content:"";position:absolute;left:0;top:5px;width:16px;height:16px;border-radius:50%;background:var(--card);border:3px solid var(--acc)}
+.timeline li.key::before{background:var(--acc)}
+.timeline b{display:block;font-size:.92rem}.timeline small{color:var(--mut);font-size:.86rem}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th{text-align:left;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);font-weight:600;padding:0 10px 10px}
+td{padding:11px 10px;border-top:1px solid var(--bd);vertical-align:top}
+td.pts{font-weight:700;color:var(--acc2);text-align:center}
+.mut{color:var(--mut);font-size:.88rem}
+.tag{display:inline-block;background:var(--soft);color:var(--acc2);border-radius:6px;padding:1px 8px;font-weight:600;font-size:.82rem;white-space:nowrap}
+footer{text-align:center;color:var(--mut);font-size:.85rem;padding:0 16px 40px}
+@media (max-width:760px){.grid3,#topics,.cols{grid-template-columns:1fr}.card{padding:20px}.hero{padding-top:32px}}
 </style>
 </head>
 <body>
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">Introduction to Project Management · BICS · University of Luxembourg</p>
+    <h1>Poster Session: Projects in the Age of AI</h1>
+    <p class="lead">Pick one current AI topic, research it, and explain it on a poster from a project management point of view.</p>
+    <div class="chips">
+      <span class="chip">📅 Fri 11.12.2026</span><span class="chip">⏰ 15:45 – 18:15</span><span class="chip">📍 Lab 12 · mandatory</span><span class="chip">☕ Coffee &amp; desserts</span><span class="chip">🏆 Best Poster Awards</span>
+    </div>
+  </div>
+</header>
+
 <main>
-<div class="card">
-  <h1>Poster Session — Topic Selection</h1>
-  <p class="sub">Introduction to Project Management · BICS · Poster Session on Friday 11.12.2026, 15:45–18:15</p>
-  <p class="mut" style="margin-top:10px">Only the <b>Poster Leader</b> submits, once per group. First come, first served. Closes Friday 13.11.2026, 23:59.</p>
-</div>
 <div class="card" id="formCard">
+  <h2>Choose your group's topic</h2>
+  <p class="hint">Topic selection closes <b>Friday 13.11.2026, 23:59</b>.</p>
+  <div class="notice">👤 <div>Only the <b>Poster Leader</b> submits, once per group. First come, first served: a taken topic is locked for everyone else. Agree on 2–3 favourites with your group first.</div></div>
   <form id="f">
-    <label class="f" for="group">Group</label>
-    <select id="group" required><option value="">Select your group…</option></select>
-    <label class="f" for="name">Poster Leader name</label>
-    <input type="text" id="name" required>
-    <label class="f" for="email">University email</label>
-    <input type="email" id="email" required placeholder="firstname.lastname.001@student.uni.lu">
-    <label class="f" for="sub">Your specific focus / poster title</label>
-    <input type="text" id="sub" required placeholder="e.g. Can AI coding assistants replace junior developers?">
-    <label class="f">Topic</label>
+    <div class="step"><span>1</span>Who you are</div>
+    <div class="grid3">
+      <div><label class="f" for="group">Group</label><select id="group" required><option value="">Select…</option></select></div>
+      <div><label class="f" for="name">Poster Leader name</label><input type="text" id="name" required></div>
+      <div><label class="f" for="email">University email</label><input type="email" id="email" required placeholder="name.001@student.uni.lu"></div>
+    </div>
+
+    <div class="step"><span>2</span>Pick a topic <span class="counter" id="left"></span></div>
     <div id="topics"><p class="mut">Loading available topics…</p></div>
+
+    <div class="step"><span>3</span>Your specific focus</div>
+    <label class="f" for="sub">Poster title or the question your poster answers</label>
+    <input type="text" id="sub" required placeholder="e.g. Can AI coding assistants replace junior developers?">
+
     <button id="btn" disabled>Submit choice</button>
     <div class="err" id="err"></div>
   </form>
 </div>
+
 <div class="card ok" id="okCard">
-  <h1>Topic confirmed ✔</h1>
-  <p><b id="okGroup"></b> will present: <b id="okTopic"></b></p>
+  <div class="big">🎉</div>
+  <h2>Topic confirmed</h2>
+  <div class="pick"><span id="okGroup"></span>: <span id="okTopic"></span></div>
   <p class="mut">A confirmation was sent to <span id="okEmail"></span>. Choices are final; contact the teaching team if there is a problem.</p>
 </div>
-<div class="card">
-  <h2>📅 Schedule</h2>
-  <div class="dates">
-    <div><b>Fri 13.11, 23:59</b>Topic selection deadline (this website)</div>
-    <div><b>Fri 27.11, 15:45–18:15</b>Poster Q&amp;A · Lab 10, MSA 3.110 · No quiz</div>
-    <div><b>Fri 04.12, 15:45–18:15</b>Final preparation &amp; poster submission (Moodle) · Lab 11, MSA 3.350 · No quiz</div>
-    <div><b>Fri 11.12, 15:45–18:15</b>Poster Session (Lab 12) · mandatory for all groups · ☕ Coffee &amp; desserts · 🏆 Best Poster Awards</div>
+
+<div class="cols">
+  <div class="card">
+    <h2>📅 Schedule</h2>
+    <p class="hint">The real work happens between these dates, not in one session.</p>
+    <ul class="timeline">
+      <li class="key"><b>Fri 13.11 · 23:59</b><small>Topic selection deadline (this website)</small></li>
+      <li><b>Fri 27.11 · 15:45–18:15</b><small>Poster Q&amp;A – bring your draft · Lab 10, MSA 3.110 · no quiz</small></li>
+      <li><b>Fri 04.12 · 15:45–18:15</b><small>Final preparation &amp; poster submission on Moodle · Lab 11, MSA 3.350 · no quiz</small></li>
+      <li class="key"><b>Fri 11.12 · 15:45–18:15</b><small>Poster Session · Lab 12 · mandatory for all groups</small></li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>⚖️ Peer grading · 20 points</h2>
+    <p class="hint">Every student grades the other posters on the day.</p>
+    <table><thead><tr><th>Category</th><th>Pts</th></tr></thead><tbody>
+      <tr><td><b>Visual appeal &amp; layout</b><br><span class="mut">Legible text, clear diagrams, not overcrowded</span></td><td class="pts">5</td></tr>
+      <tr><td><b>Presentation pitch</b><br><span class="mut">Clear and engaging explanation</span></td><td class="pts">5</td></tr>
+      <tr><td><b>Accessibility</b><br><span class="mut">Understandable without being an expert</span></td><td class="pts">5</td></tr>
+      <tr><td><b>Q&amp;A interaction</b><br><span class="mut">Confident, correct answers</span></td><td class="pts">5</td></tr>
+    </tbody></table>
   </div>
 </div>
+
 <div class="card">
-  <h2>📋 Registered Groups &amp; Topics</h2>
-  <table><thead><tr><th>Group</th><th>Topic</th><th>Focus / Title</th></tr></thead><tbody id="reg"><tr><td colspan="3" class="mut">Loading…</td></tr></tbody></table>
-</div>
-<div class="card">
-  <h2>⚖️ Peer Grading (20 points)</h2>
-  <table><thead><tr><th>Category</th><th>Pts</th><th>Guiding question</th></tr></thead><tbody>
-    <tr><td>Visual Appeal &amp; Layout</td><td>5</td><td>Is the text legible, are the diagrams clear, is the layout not overcrowded?</td></tr>
-    <tr><td>Presentation Pitch</td><td>5</td><td>Did the speaker explain the topic clearly and engagingly?</td></tr>
-    <tr><td>Accessibility</td><td>5</td><td>Could you understand the problem and the key ideas without being an expert?</td></tr>
-    <tr><td>Q&amp;A Interaction</td><td>5</td><td>Did the presenters answer questions confidently and correctly?</td></tr>
-  </tbody></table>
-  <p class="mut">Best-rated posters receive the Best Poster Award. Questions? hongyang.li@uni.lu</p>
+  <h2>📋 Registered groups &amp; topics</h2>
+  <p class="hint">Updated live as groups submit.</p>
+  <table><thead><tr><th>Group</th><th>Topic</th><th>Focus / title</th></tr></thead><tbody id="reg"><tr><td colspan="3" class="mut">Loading…</td></tr></tbody></table>
 </div>
 </main>
+<footer>Questions? <a href="mailto:hongyang.li@uni.lu">hongyang.li@uni.lu</a> · © 2026 University of Luxembourg</footer>
+
 <script src="topics.js"></script>
 <script>
 // Google Apps Script web app URL (see apps-script/README.md)
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbxmZchsX3UvcYZRWwmHhnTeTvcbPJ1Au5T0mpiitCjOYKpSWUW9QeVgV0_fLov7pE70/exec";
 const $ = id => document.getElementById(id);
+const esc = t => String(t || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 for (let g = 1; g <= 14; g++) $("group").insertAdjacentHTML("beforeend", `<option>Group ${g}</option>`);
 
 function render(taken) {
+  const prev = document.querySelector("input[name=topic]:checked")?.value;
   $("topics").innerHTML = TOPICS.map(([t, d], i) => {
     const g = taken[t];
-    return `<label class="t${g ? " taken" : ""}" data-g="${g || ""}"><input type="radio" name="topic" value="${t}" ${g ? "disabled" : "required"}>
-      <div><b data-g="${g || ""}">${i + 1}. ${t}</b><span>${d}</span></div></label>`;
+    return `<label class="t${g ? " taken" : ""}"><input type="radio" name="topic" value="${esc(t)}" ${g ? "disabled" : "required"} ${!g && prev === t ? "checked" : ""}>
+      <div class="n">${i + 1}</div><div><b>${esc(t)}</b><span>${esc(d)}</span></div>${g ? `<em class="badge">${esc(g)}</em>` : ""}</label>`;
   }).join("");
+  const left = TOPICS.filter(([t]) => !taken[t]).length;
+  $("left").textContent = `${left} of ${TOPICS.length} still available`;
   $("btn").disabled = false;
 }
 
 function renderReg(rows) {
-  const esc = t => String(t || "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   rows.sort((a, b) => parseInt(a.group.replace(/\D/g, "")) - parseInt(b.group.replace(/\D/g, "")));
-  $("reg").innerHTML = rows.length ? rows.map(r => `<tr><td>${esc(r.group)}</td><td>${esc(r.topic)}</td><td>${esc(r.sub) || "–"}</td></tr>`).join("")
-    : `<tr><td colspan="3" class="mut">No groups registered yet.</td></tr>`;
+  $("reg").innerHTML = rows.length ? rows.map(r => `<tr><td><span class="tag">${esc(r.group)}</span></td><td><b>${esc(r.topic)}</b></td><td>${esc(r.sub) || "–"}</td></tr>`).join("")
+    : `<tr><td colspan="3" class="mut">No groups registered yet – be the first!</td></tr>`;
 }
 
 async function load() {
@@ -107,7 +174,7 @@ async function load() {
     render(data.taken);
     renderReg(data.rows || Object.entries(data.taken).map(([topic, group]) => ({ group, topic })));
     if (data.closed) { $("btn").disabled = true; $("err").textContent = "Topic selection is closed."; }
-  } catch (x) { $("topics").innerHTML = `<p class="err">Could not load topics: ${x.message}</p>`; }
+  } catch (x) { $("topics").innerHTML = `<p class="err">Could not load topics: ${esc(x.message)}</p>`; }
 }
 load();
 
@@ -121,8 +188,8 @@ $("f").addEventListener("submit", async e => {
     const r = await fetch(ENDPOINT, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(data) });
     const res = await r.json();
     if (!res.ok) throw new Error(res.error);
-    $("okGroup").textContent = data.group; $("okTopic").textContent = data.topic + " – " + data.sub; load(); $("okEmail").textContent = data.email;
-    $("formCard").style.display = "none"; $("okCard").style.display = "block"; window.scrollTo(0, 0);
+    $("okGroup").textContent = data.group; $("okTopic").textContent = data.topic + " – " + data.sub; $("okEmail").textContent = data.email;
+    $("formCard").style.display = "none"; $("okCard").style.display = "block"; window.scrollTo(0, 0); load();
   } catch (x) {
     err.textContent = x.message; btn.disabled = false; btn.textContent = "Submit choice"; load();
   }
