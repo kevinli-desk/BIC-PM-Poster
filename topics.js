@@ -1,0 +1,18 @@
+const TOPICS = [
+  ["AI Coding Assistants", "Copilot, Cursor, Claude Code – will they change the job of a software engineer?"],
+  ["Generative AI in Education", "Personal tutor or cheating machine? How should universities respond?"],
+  ["Deepfakes & Misinformation", "Fake videos, voices and news – detection, elections and trust"],
+  ["The EU AI Act", "Europe's AI law: risk categories, obligations and what it means for developers"],
+  ["The Energy Cost of AI", "Data centres, electricity and water – how green is AI?"],
+  ["AI and the Job Market", "Which jobs change, disappear or appear? Evidence vs. hype"],
+  ["AI in Healthcare", "Diagnosis, imaging and drug discovery – accuracy, liability and trust"],
+  ["Autonomous Vehicles", "Self-driving cars and robotaxis – safety, responsibility, readiness"],
+  ["AI Agents", "AI that acts on its own: booking, coding, browsing – how far can we trust it?"],
+  ["Data, Privacy & Copyright", "What data trains AI models? Consent, GDPR and copyright lawsuits"],
+  ["Bias & Fairness", "Algorithms deciding on hiring, loans and policing – who checks them?"],
+  ["AI in Cybersecurity", "AI-powered attacks (phishing, malware) vs. AI-powered defence"],
+  ["Open vs. Closed AI Models", "Open-weight models vs. proprietary ones – innovation, safety, control"],
+  ["AI for Climate & Sustainability", "Weather prediction, energy grids, agriculture – real impact?"],
+  ["AI in the Creative Industries", "Art, music, film – new tools or threat to creators?"],
+  ["AI for Project Management", "AI tools for planning, estimation and risk – can AI run a project?"],
+];

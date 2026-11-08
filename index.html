@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PM Poster Topics</title>
+<style>
+:root{--bg:#f7f7f5;--card:#fff;--fg:#1d1d1f;--mut:#666;--acc:#129fd8;--bd:#ddd;--taken:#eee}
+@media (prefers-color-scheme:dark){:root{--bg:#141414;--card:#1e1e1e;--fg:#eee;--mut:#aaa;--acc:#3db3e8;--bd:#333;--taken:#262626}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif}
+main{max-width:720px;margin:40px auto;padding:0 16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:24px;margin-bottom:16px}
+h1{font-size:1.4rem;margin:0 0 4px}p.sub{color:var(--mut);margin:0}
+label.f{display:block;font-weight:600;margin:16px 0 6px}
+select,input[type=email],input[type=text]{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--fg);font:inherit}
+.t{display:flex;gap:10px;border:1px solid var(--bd);border-radius:8px;padding:10px 12px;margin:8px 0;cursor:pointer}
+.t input{margin-top:5px}.t b{display:block}.t span{color:var(--mut);font-size:.92rem}
+.t.taken{background:var(--taken);cursor:not-allowed;opacity:.6}.t.taken b::after{content:" — taken by Group " attr(data-g);font-weight:400;color:var(--mut)}
+button{margin-top:20px;width:100%;padding:12px;border:0;border-radius:8px;background:var(--acc);color:#fff;font:inherit;font-weight:600;cursor:pointer}
+button:disabled{opacity:.6;cursor:default}
+.err{color:#c0392b;margin-top:10px}.ok{display:none}.mut{color:var(--mut);font-size:.9rem}
+</style>
+</head>
+<body>
+<main>
+<div class="card">
+  <h1>Poster Session — Topic Selection</h1>
+  <p class="sub">Introduction to Project Management · BICS · Poster Session on Friday 11.12.2026, 15:45–18:15</p>
+  <p class="mut" style="margin-top:10px">Only the <b>Poster Leader</b> submits, once per group. First come, first served. Closes Friday 13.11.2026, 23:59.</p>
+</div>
+<div class="card" id="formCard">
+  <form id="f">
+    <label class="f" for="group">Group</label>
+    <select id="group" required><option value="">Select your group…</option></select>
+    <label class="f" for="name">Poster Leader name</label>
+    <input type="text" id="name" required>
+    <label class="f" for="email">University email</label>
+    <input type="email" id="email" required placeholder="firstname.lastname.001@student.uni.lu">
+    <label class="f">Topic</label>
+    <div id="topics"><p class="mut">Loading available topics…</p></div>
+    <button id="btn" disabled>Submit choice</button>
+    <div class="err" id="err"></div>
+  </form>
+</div>
+<div class="card ok" id="okCard">
+  <h1>Topic confirmed ✔</h1>
+  <p><b id="okGroup"></b> will present: <b id="okTopic"></b></p>
+  <p class="mut">A confirmation was sent to <span id="okEmail"></span>. Choices are final; contact the teaching team if there is a problem.</p>
+</div>
+</main>
+<script src="topics.js"></script>
+<script>
+// Google Apps Script web app URL (see apps-script/README.md)
+const ENDPOINT = "";
+const $ = id => document.getElementById(id);
+for (let g = 1; g <= 14; g++) $("group").insertAdjacentHTML("beforeend", `<option>Group ${g}</option>`);
+
+function render(taken) {
+  $("topics").innerHTML = TOPICS.map(([t, d], i) => {
+    const g = taken[t];
+    return `<label class="t${g ? " taken" : ""}" data-g="${g || ""}"><input type="radio" name="topic" value="${t}" ${g ? "disabled" : "required"}>
+      <div><b data-g="${g || ""}">${i + 1}. ${t}</b><span>${d}</span></div></label>`;
+  }).join("");
+  $("btn").disabled = false;
+}
+
+async function load() {
+  try {
+    if (!ENDPOINT) throw new Error("Topic service not configured yet.");
+    const r = await fetch(ENDPOINT + "?t=" + Date.now());
+    const data = await r.json();
+    render(data.taken);
+    if (data.closed) { $("btn").disabled = true; $("err").textContent = "Topic selection is closed."; }
+  } catch (x) { $("topics").innerHTML = `<p class="err">Could not load topics: ${x.message}</p>`; }
+}
+load();
+
+$("f").addEventListener("submit", async e => {
+  e.preventDefault();
+  const btn = $("btn"), err = $("err");
+  const pick = document.querySelector("input[name=topic]:checked");
+  const data = { group: $("group").value, name: $("name").value.trim(), email: $("email").value.trim(), topic: pick.value };
+  btn.disabled = true; btn.textContent = "Submitting…"; err.textContent = "";
+  try {
+    const r = await fetch(ENDPOINT, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(data) });
+    const res = await r.json();
+    if (!res.ok) throw new Error(res.error);
+    $("okGroup").textContent = data.group; $("okTopic").textContent = data.topic; $("okEmail").textContent = data.email;
+    $("formCard").style.display = "none"; $("okCard").style.display = "block"; window.scrollTo(0, 0);
+  } catch (x) {
+    err.textContent = x.message; btn.disabled = false; btn.textContent = "Submit choice"; load();
+  }
+});
+</script>
+</body>
+</html>
