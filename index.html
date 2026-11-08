@@ -188,7 +188,7 @@ function render(taken) {
 function renderReg(rows) {
   rows.sort((a, b) => parseInt(a.group.replace(/\D/g, "")) - parseInt(b.group.replace(/\D/g, "")));
   $("reg").innerHTML = rows.length ? rows.map(r => `<tr><td><span class="tag">${esc(r.group)}</span></td><td><b>${esc(r.topic)}</b></td></tr>`).join("")
-    : `<tr><td colspan="3" class="mut">No groups registered yet – be the first!</td></tr>`;
+    : `<tr><td colspan="2" class="mut">No groups registered yet – be the first!</td></tr>`;
 }
 
 async function load() {
