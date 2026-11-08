@@ -97,10 +97,6 @@ footer{text-align:center;color:var(--mut);font-size:.85rem;padding:0 16px 40px}
     <div class="step"><span>2</span>Pick a topic <span class="counter" id="left"></span></div>
     <div id="topics"><p class="mut">Loading available topics…</p></div>
 
-    <div class="step"><span>3</span>Your specific focus</div>
-    <label class="f" for="sub">Poster title or the question your poster answers</label>
-    <input type="text" id="sub" required placeholder="e.g. Can AI coding assistants replace junior developers?">
-
     <button id="btn" disabled>Submit choice</button>
     <div class="err" id="err"></div>
   </form>
@@ -163,7 +159,7 @@ footer{text-align:center;color:var(--mut);font-size:.85rem;padding:0 16px 40px}
 <div class="card">
   <h2>📋 Registered groups &amp; topics</h2>
   <p class="hint">Updated live as groups submit.</p>
-  <table><thead><tr><th>Group</th><th>Topic</th><th>Focus / title</th></tr></thead><tbody id="reg"><tr><td colspan="3" class="mut">Loading…</td></tr></tbody></table>
+  <table><thead><tr><th>Group</th><th>Topic</th></tr></thead><tbody id="reg"><tr><td colspan="2" class="mut">Loading…</td></tr></tbody></table>
 </div>
 </main>
 <footer>Questions? <a href="mailto:hongyang.li@uni.lu">hongyang.li@uni.lu</a> · © 2026 University of Luxembourg</footer>
@@ -191,7 +187,7 @@ function render(taken) {
 
 function renderReg(rows) {
   rows.sort((a, b) => parseInt(a.group.replace(/\D/g, "")) - parseInt(b.group.replace(/\D/g, "")));
-  $("reg").innerHTML = rows.length ? rows.map(r => `<tr><td><span class="tag">${esc(r.group)}</span></td><td><b>${esc(r.topic)}</b></td><td>${esc(r.sub) || "–"}</td></tr>`).join("")
+  $("reg").innerHTML = rows.length ? rows.map(r => `<tr><td><span class="tag">${esc(r.group)}</span></td><td><b>${esc(r.topic)}</b></td></tr>`).join("")
     : `<tr><td colspan="3" class="mut">No groups registered yet – be the first!</td></tr>`;
 }
 
@@ -211,13 +207,13 @@ $("f").addEventListener("submit", async e => {
   e.preventDefault();
   const btn = $("btn"), err = $("err");
   const pick = document.querySelector("input[name=topic]:checked");
-  const data = { group: $("group").value, name: $("name").value.trim(), email: $("email").value.trim(), sub: $("sub").value.trim(), topic: pick.value };
+  const data = { group: $("group").value, name: $("name").value.trim(), email: $("email").value.trim(), sub: "", topic: pick.value };
   btn.disabled = true; btn.textContent = "Submitting…"; err.textContent = "";
   try {
     const r = await fetch(ENDPOINT, { method: "POST", headers: { "Content-Type": "text/plain" }, body: JSON.stringify(data) });
     const res = await r.json();
     if (!res.ok) throw new Error(res.error);
-    $("okGroup").textContent = data.group; $("okTopic").textContent = data.topic + " – " + data.sub; $("okEmail").textContent = data.email;
+    $("okGroup").textContent = data.group; $("okTopic").textContent = data.topic; $("okEmail").textContent = data.email;
     $("formCard").style.display = "none"; $("okCard").style.display = "block"; window.scrollTo(0, 0); load();
   } catch (x) {
     err.textContent = x.message; btn.disabled = false; btn.textContent = "Submit choice"; load();
