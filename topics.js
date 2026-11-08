@@ -16,5 +16,4 @@ const TOPICS = [
   ["AI in Physics & Chemistry", "New materials, self-driving labs and simulation – can AI make discoveries?"],
   ["AI for Climate & Sustainability", "Weather prediction, energy grids, agriculture – real impact?"],
   ["AI in the Creative Industries", "Art, music, film – new tools or threat to creators?"],
-  ["AI for Project Management", "AI tools for planning, estimation and risk – can AI run a project?"],
 ];
